@@ -1,0 +1,10 @@
+C:/Joaquin/neuron_simulation/C++/build/CMakeFiles/NeuronSim.dir
+C:/Joaquin/neuron_simulation/C++/build/CMakeFiles/INSTALL.dir
+C:/Joaquin/neuron_simulation/C++/build/CMakeFiles/ALL_BUILD.dir
+C:/Joaquin/neuron_simulation/C++/build/CMakeFiles/ZERO_CHECK.dir
+C:/Joaquin/neuron_simulation/C++/build/_deps/glfw-build/CMakeFiles/uninstall.dir
+C:/Joaquin/neuron_simulation/C++/build/_deps/glfw-build/CMakeFiles/INSTALL.dir
+C:/Joaquin/neuron_simulation/C++/build/_deps/glfw-build/CMakeFiles/ALL_BUILD.dir
+C:/Joaquin/neuron_simulation/C++/build/_deps/glfw-build/src/CMakeFiles/update_mappings.dir
+C:/Joaquin/neuron_simulation/C++/build/_deps/glfw-build/src/CMakeFiles/glfw.dir
+C:/Joaquin/neuron_simulation/C++/build/_deps/glfw-build/src/CMakeFiles/INSTALL.dir

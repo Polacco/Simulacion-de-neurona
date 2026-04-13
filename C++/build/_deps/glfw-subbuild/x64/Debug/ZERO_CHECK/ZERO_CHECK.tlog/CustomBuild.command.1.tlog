@@ -1,0 +1,10 @@
+^C:\JOAQUIN\NEURON_SIMULATION\C++\BUILD\_DEPS\GLFW-SUBBUILD\CMAKEFILES\567237391D089F06D06CB34B20E0277B\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Joaquin/neuron_simulation/C++/build/_deps/glfw-subbuild -BC:/Joaquin/neuron_simulation/C++/build/_deps/glfw-subbuild --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Joaquin/neuron_simulation/C++/build/_deps/glfw-subbuild/glfw-populate.slnx
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

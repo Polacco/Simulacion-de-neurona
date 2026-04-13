@@ -1,0 +1,9 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/Joaquin/neuron_simulation/C++/build/cmake_install.cmake",
+		"C:/Joaquin/neuron_simulation/C++/build/_deps/glfw-build/cmake_install.cmake",
+		"C:/Joaquin/neuron_simulation/C++/build/_deps/glfw-build/src/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
