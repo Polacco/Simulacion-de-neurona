@@ -43,12 +43,25 @@ int main() {
 
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.02f, 0.02f, 0.04f, 1.0f); 
-        glClear(GL_COLOR_BUFFER_BIT);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+        
+        glColor4f(0.02f, 0.02f, 0.04f, 0.10f); 
+        glBegin(GL_QUADS);
+            glVertex2f(-1.0f, -1.0f);
+            glVertex2f( 1.0f, -1.0f);
+            glVertex2f( 1.0f,  1.0f);
+            glVertex2f(-1.0f,  1.0f);
+        glEnd();
 
         bool is_firing = (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS);
 
-        glPointSize(3.0f); 
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE); // suma de luces/fotones
+        glEnable(GL_POINT_SMOOTH);
+
         glBegin(GL_POINTS);
+
 
         for (auto& ion : iones) {
             float dx = ion.x - soma_cx;
@@ -101,7 +114,12 @@ int main() {
             ion.x += ion.vx;
             ion.y += ion.vy;
 
-            glColor3f(ion.r, ion.g, ion.b);
+            // logica para shaders
+            glColor4f(ion.r, ion.g, ion.b, 0.05f); // 5% de opacidad
+            glVertex2f(ion.x, ion.y);
+
+            // nucleo brillante
+            glColor4f(ion.r, ion.g, ion.b, 0.8f); // 80% de opacidad
             glVertex2f(ion.x, ion.y);
         }
 
