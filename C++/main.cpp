@@ -5,21 +5,21 @@
 #include <cmath>
 
 struct Ion {
-    float x, y; // posicion
-    float vx, vy; //velocidad
-    float r, g, b; //color
-    int tipo;
+    float x, y;       
+    float vx, vy;     
+    float r, g, b;    
+    int tipo;         
 };
 
 int main() {
     if (!glfwInit()) return -1;
-    GLFWwindow* window = glfwCreateWindow(1024, 768, "Bio-Molecular Neuron - Potencial de Accion", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(1024, 768, "Bio-Molecular Neuron - Fase 2: Axon Activo", NULL, NULL);
     if (!window) { glfwTerminate(); return -1; }
     glfwMakeContextCurrent(window);
-    glfwSwapInterval(1);
+    glfwSwapInterval(1); // maximo de 60 FPS
 
     std::vector<Ion> iones;
-    int cantidad_na = 1500;
+    int cantidad_na = 2500; 
     int cantidad_k = 1500;
 
     std::random_device rd;
@@ -28,14 +28,17 @@ int main() {
     std::uniform_real_distribution<float> pos_dist(0.0f, 1.0f);
     std::uniform_real_distribution<float> brownian(-0.002f, 0.002f);
 
-    // sodio
+    float soma_cx = -0.5f;
+    float soma_cy = 0.0f;
+
+    // generar poblacion
     for (int i = 0; i < cantidad_na; ++i) {
         float angle = angle_dist(gen); float radius = pos_dist(gen);
-        iones.push_back({ cos(angle)*radius, sin(angle)*radius, 0, 0, 1.0f, 0.8f, 0.0f, 0 }); // amarillo
-    } // potasio
+        iones.push_back({ soma_cx + cos(angle)*radius, soma_cy + sin(angle)*radius, 0, 0, 1.0f, 0.8f, 0.0f, 0 });
+    }
     for (int i = 0; i < cantidad_k; ++i) {
         float angle = angle_dist(gen); float radius = pos_dist(gen);
-        iones.push_back({ cos(angle)*radius, sin(angle)*radius, 0, 0, 0.0f, 0.8f, 1.0f, 1 }); // celeste
+        iones.push_back({ soma_cx + cos(angle)*radius, soma_cy + sin(angle)*radius, 0, 0, 0.0f, 0.8f, 1.0f, 1 });
     }
 
     while (!glfwWindowShouldClose(window)) {
@@ -48,41 +51,50 @@ int main() {
         glBegin(GL_POINTS);
 
         for (auto& ion : iones) {
-            float dist = std::sqrt(ion.x * ion.x + ion.y * ion.y);
+            float dx = ion.x - soma_cx;
+            float dy = ion.y - soma_cy;
+            float dist = std::sqrt(dx * dx + dy * dy);
             if (dist == 0.0f) dist = 0.001f;
 
-            float dir_x = ion.x / dist;
-            float dir_y = ion.y / dist;
+            float dir_x = dx / dist;
+            float dir_y = dy / dist;
+
+            // logica del axon
+            bool en_axon = (ion.x > soma_cx && std::abs(ion.y) < 0.15f);
+            bool adentro = (dist < 0.4f || en_axon);
 
             if (is_firing) {
-                if (ion.tipo == 0) {
-                    ion.vx -= dir_x * 0.005f;
-                    ion.vy -= dir_y * 0.005f;
-                } else if (ion.tipo == 1) {
-                    ion.vx += dir_x * 0.001f;
-                    ion.vy += dir_y * 0.001f;
-                }
-            } else {
-                if (ion.tipo == 0) {
-                    if (dist < 0.6f) {
-                        ion.vx += dir_x * 0.002f;
-                        ion.vy += dir_y * 0.002f;
-                    } else if (dist > 0.8f) {
-                        ion.vx -= dir_x * 0.001f;
-                        ion.vy -= dir_y * 0.001f;
+                if (ion.tipo == 0) { // sodio
+                    if (!adentro) {
+                        if (ion.x > soma_cx) ion.vy += (0.0f - ion.y) * 0.01f; 
+                        else { ion.vx -= dir_x * 0.005f; ion.vy -= dir_y * 0.005f; }
+                    } else {
+                        ion.vx += 0.012f; 
                     }
-                } else if (ion.tipo == 1) {
-                    if (dist > 0.4f) {
-                        ion.vx -= dir_x * 0.003f;
-                        ion.vy -= dir_y * 0.003f;
+                } else if (ion.tipo == 1) { // potasio
+                    ion.vx += dir_x * 0.001f; ion.vy += dir_y * 0.001f;
+                }
+            } else { // estado de reposo neuronal
+                if (ion.tipo == 0) { // sodio entra para despolarizar
+                    if (adentro) {
+                        if (en_axon) ion.vy += (ion.y > 0 ? 0.006f : -0.006f);
+                        else { ion.vx += dir_x * 0.004f; ion.vy += dir_y * 0.004f; }
+                    } else if (dist > 0.9f && !en_axon) { 
+                        ion.vx -= dir_x * 0.001f; ion.vy -= dir_y * 0.001f;
+                    }
+                } else if (ion.tipo == 1) { // potasio sale para repolarizar
+                    if (!adentro) {
+                        if (ion.x > soma_cx) ion.vy += (0.0f - ion.y) * 0.006f; // movimiento a axon
+                        else { ion.vx -= dir_x * 0.004f; ion.vy -= dir_y * 0.004f; }
                     }
                 }
             }
 
-            ion.vx *= 0.92f;
-            ion.vy *= 0.92f;
+            if (ion.x > 1.2f) ion.x = -1.2f;
 
-            // movimiento browniano
+            ion.vx *= 0.88f; 
+            ion.vy *= 0.88f;
+
             ion.vx += brownian(gen);
             ion.vy += brownian(gen);
 
