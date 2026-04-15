@@ -37,7 +37,7 @@ Para lograr un rendimiento fluido (60 FPS estables) manipulando miles de partíc
 Cómo ejecutarlo
 
 Clonar el repositorio
-git clone https://github.com/tu-usuario/Simulacion-de-neurona.git
+git clone https://github.com/Polacco/Simulacion-de-neurona.git
 cd Simulacion-de-neurona
 
 Construir el proyecto con CMake
